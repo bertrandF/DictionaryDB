@@ -186,6 +186,7 @@ def __help_cmd(cmd):
         print("Usage: " + sys.argv[0] + " " + cmd + " <options>")
         print("")
         print("Options:")
+        print("  -a                Print all definitions in the table.")
         print("  -f <str,str,...>  Print definitions matching the set of given fields.")
         print("  -i <id>           Print definition matching the given ID.")
         print("  -n <str>          Print definition mathing the given entry name.")
@@ -206,35 +207,37 @@ def search():
         __help_cmd(sys.argv[1])
         return
     else:
-        if not opt in ('-f', '-i', '-n'):
+        if not opt in ('-a', '-f', '-i', '-n'):
             print("Unknown option '" + sys.argv[2] + "'")
             __help_cmd(sys.argv[1])
             return
-
-    try:
-        optarg = sys.argv[3]
-    except IndexError:
-        print("Missing argument.")
-        __help_cmd(sys.argv[1])
-        return
-
-
+    
     conn = PSQL.connect("dbname=" + config['dbname'] + " user=" + config['user'])
     cur  = conn.cursor()
 
-    if opt == "-f":
-        req = __search_build_req_fields(optarg.split(','))
-    elif opt == '-i':
-        req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE id=%s", (optarg,))
-    elif opt == "-n":
-        req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE name=%s", (optarg,))
-    print(req)
-    cur.execute(req)
-    print_rows(cur.fetchall())
-   
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        if opt == "-a":
+            req = cur.mogrify("SELECT id,fields,name,def,url FROM dico")
+        elif opt == "-f":
+            optarg = sys.argv[3]
+            req = __search_build_req_fields(optarg.split(','))
+        elif opt == '-i':
+            optarg = sys.argv[3]
+            req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE id=%s", (optarg,))
+        elif opt == "-n":
+            optarg = sys.argv[3]
+            req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE name=%s", (optarg,))
+    except IndexError:
+        print("Missing argument.")
+        __help_cmd(sys.argv[1])
+    else:
+        print(req)
+        cur.execute(req)
+        print_rows(cur.fetchall())
+        conn.commit()
+    finally:
+        cur.close()
+        conn.close()
 
 
 

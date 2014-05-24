@@ -27,6 +27,7 @@
 ### Imports ###
 import sys
 import psycopg2 as PSQL
+import textwrap as txtwrp
 
 
 
@@ -224,7 +225,7 @@ def search():
     if opt == "-f":
         req = __search_build_req_fields(optarg.split(','))
     elif opt == '-i':
-        req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE id=%s", (optarg))
+        req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE id=%s", (optarg,))
     elif opt == "-n":
         req = cur.mogrify("SELECT id,fields,name,def,url FROM dico WHERE name=%s", (optarg,))
     print(req)
@@ -257,12 +258,20 @@ def print_rows(rows):
     for row in rows:
         print("---------------------")
         print("ID     : ", row[0])
-        print("FIELDS : ", row[1])
-        print("NAME   : ", row[2])
-        print("DEF    : ", row[3])
-        print("URL    : ", row[4])
+        __print_row_wrapped("FIELDS : ", row[1])
+        __print_row_wrapped("NAME   : ", row[2])
+        __print_row_wrapped("DEF    : ", row[3])
+        __print_row_wrapped("URL    : ", row[4])
         print("")
 
+def __print_row_wrapped(label, value):
+    labellen = len(label)
+    wrapped = txtwrp.wrap(value)
+
+    print(label, wrapped[0])
+    for i in range(1, len(wrapped)):
+        print(' ' * labellen, wrapped[i])
+        
 
 
 ############

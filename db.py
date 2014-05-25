@@ -130,7 +130,7 @@ def delete():
 
     conn = PSQL.connect("dbname=" + config['dbname'] + " user=" + config['user'])
     cur  = conn.cursor()
-    req  = cur.mogrify("DELETE FROM dico WHERE id=%s", (defid))
+    req  = cur.mogrify("DELETE FROM dico WHERE id=%s", (defid,))
     print(req)
     cur.execute(req)
     conn.commit()

@@ -5,7 +5,11 @@ CREATE TYPE fields_e AS ENUM (
     'gps',
     'board',
     'internet',
-    'connect'
+    'connect',
+    'hardware',
+    'software',
+    'memory',
+    'storage'
 );
 
 CREATE TABLE dico (

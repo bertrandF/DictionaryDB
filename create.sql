@@ -10,7 +10,8 @@ CREATE TYPE fields_e AS ENUM (
     'software',
     'memory',
     'storage',
-    'motor'
+    'motor',
+    'unit'
 );
 
 CREATE TABLE dico (

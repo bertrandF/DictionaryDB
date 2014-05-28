@@ -11,7 +11,8 @@ CREATE TYPE fields_e AS ENUM (
     'memory',
     'storage',
     'motor',
-    'unit'
+    'unit',
+    'battery'
 );
 
 CREATE TABLE dico (
